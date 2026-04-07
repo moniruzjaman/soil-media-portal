@@ -1015,6 +1015,228 @@
     #qr-popover { right: 8px; left: 8px; }
   }
 
+
+  /* ── MEDIA FULLSCREEN MODAL ─────────────────────── */
+  #media-fs-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 3000;
+    flex-direction: column;
+  }
+  #media-fs-modal.open { display: flex; }
+
+  .media-fs-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--soil);
+    border-bottom: 2px solid var(--sun);
+    flex-shrink: 0;
+  }
+  .media-fs-bar-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .media-fs-bar a, .media-fs-bar button {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: 7px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; text-decoration: none; border: none;
+    transition: opacity var(--transition);
+  }
+  .media-fs-bar a:hover, .media-fs-bar button:hover { opacity: 0.8; }
+  .btn-mfs-dl   { background: var(--sun); color: var(--soil); }
+  .btn-mfs-close { background: #C0392B; color: #fff; }
+
+  #media-fs-frame-wrap {
+    flex: 1; position: relative; overflow: hidden;
+  }
+  #media-fs-frame-wrap iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+  #media-fs-spinner {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #0a0a0a; color: #fff; gap: 14px; font-size: 14px;
+    pointer-events: none; transition: opacity 0.4s;
+  }
+  #media-fs-spinner.hidden { opacity: 0; pointer-events: none; }
+
+  /* Fullscreen button on cards */
+  .btn-fullscreen-card {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 10px;
+    background: var(--leaf); color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; flex-shrink: 0;
+    transition: opacity var(--transition);
+  }
+  .btn-fullscreen-card:hover { opacity: 0.82; }
+
+  /* ── APPS HUB SECTION ────────────────────────────── */
+  #section-apps { margin-bottom: 52px; }
+
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .app-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(74,124,63,0.14);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition), box-shadow var(--transition);
+    animation: fadeUp 0.4s ease both;
+  }
+  .app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--paddy);
+  }
+
+  .app-card-preview {
+    width: 100%; height: 200px; border: none;
+    background: var(--mist); display: block;
+  }
+
+  .app-card-body {
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-top: 1.5px solid var(--mist);
+  }
+
+  .app-badge {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+
+  .app-meta { flex: 1; min-width: 0; }
+  .app-title { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .app-desc  { font-size: 11px; color: var(--text-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .app-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn-app-open {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 11px; background: var(--leaf); color: #fff;
+    border-radius: 8px; font-size: 11px; font-weight: 700;
+    text-decoration: none; white-space: nowrap;
+    transition: opacity var(--transition);
+  }
+  .btn-app-open:hover { opacity: 0.82; }
+  .btn-app-fs {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 10px; background: var(--sun); color: var(--soil);
+    border-radius: 8px; font-size: 11px; font-weight: 700;
+    border: none; cursor: pointer; white-space: nowrap;
+    transition: opacity var(--transition);
+  }
+  .btn-app-fs:hover { opacity: 0.82; }
+
+  /* ── BIOGRAPHY SECTION ───────────────────────────── */
+  #section-bio { margin-bottom: 52px; }
+
+  .bio-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(74,124,63,0.14);
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .bio-header {
+    background: linear-gradient(135deg, var(--soil) 0%, var(--leaf) 100%);
+    padding: 28px 32px;
+    display: flex; align-items: center; gap: 20px;
+  }
+
+  .bio-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 3px solid var(--sun);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; flex-shrink: 0;
+  }
+
+  .bio-header-text { flex: 1; }
+  .bio-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: #fff; line-height: 1.2;
+  }
+  .bio-role { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 4px; }
+  .bio-org  { font-size: 12px; color: var(--sun); margin-top: 3px; letter-spacing: 0.04em; }
+
+  .bio-body { padding: 28px 32px; }
+
+  .bio-section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px; color: var(--leaf);
+    border-left: 4px solid var(--paddy);
+    padding-left: 12px; margin: 22px 0 10px;
+    line-height: 1.2;
+  }
+
+  .bio-section-title:first-child { margin-top: 0; }
+
+  .bio-para {
+    font-size: 14px; color: var(--text-soft);
+    line-height: 1.75; margin-bottom: 10px;
+  }
+
+  .bio-project {
+    background: var(--mist);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--paddy);
+  }
+
+  .bio-project-title {
+    font-size: 14px; font-weight: 700; color: var(--text-main);
+    margin-bottom: 6px;
+  }
+
+  .bio-project p { font-size: 13px; color: var(--text-soft); line-height: 1.65; }
+
+  .bio-bullet {
+    font-size: 13px; color: var(--text-soft); line-height: 1.7;
+    padding-left: 18px; position: relative;
+  }
+  .bio-bullet::before {
+    content: '◆';
+    position: absolute; left: 0;
+    color: var(--paddy); font-size: 9px; top: 4px;
+  }
+
+  .bio-career-item {
+    display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start;
+  }
+  .bio-career-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--mist); display: flex; align-items: center;
+    justify-content: center; font-size: 18px; flex-shrink: 0; margin-top: 2px;
+  }
+  .bio-career-text h4 { font-size: 14px; font-weight: 700; color: var(--text-main); }
+  .bio-career-text p  { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-top: 3px; }
+
+  @media (max-width: 640px) {
+    .bio-header { padding: 20px; flex-direction: column; text-align: center; }
+    .bio-body { padding: 20px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1171,6 +1393,118 @@
     </div>
     <div class="image-grid" id="grid-image"></div>
   </section>
+
+
+  <!-- APPS HUB SECTION -->
+  <section id="section-apps">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#6A0DAD,#9B59B6)">🚀</div>
+      <div class="section-meta">
+        <h2>My Apps</h2>
+        <p>Live AgriTech applications — open or fullscreen inside portal</p>
+      </div>
+    </div>
+    <div class="apps-grid" id="apps-grid"></div>
+  </section>
+
+  <!-- BIOGRAPHY SECTION -->
+  <section id="section-bio">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,var(--soil),var(--bark))">👤</div>
+      <div class="section-meta">
+        <h2>Biography</h2>
+        <p>Abu Md. Moniruzzaman — Professional Profile</p>
+      </div>
+    </div>
+    <div class="bio-card" id="bio-card">
+      <div class="bio-header">
+        <div class="bio-avatar">🌾</div>
+        <div class="bio-header-text">
+          <div class="bio-name">Abu Md. Moniruzzaman</div>
+          <div class="bio-role">Additional Deputy Director (Horticulture) · 31st BCS Agriculture Cadre</div>
+          <div class="bio-org">Department of Agricultural Extension (DAE) · Kurigram, Bangladesh</div>
+        </div>
+      </div>
+      <div class="bio-body">
+
+        <div class="bio-section-title">Professional Summary</div>
+        <p class="bio-para">Abu Md. Moniruzzaman is a visionary and dedicated officer of the Department of Agricultural Extension (DAE), Government of the People's Republic of Bangladesh, serving as Additional Deputy Director (Horticulture) at Kurigram. A member of the 31st BCS (Agriculture) cadre, he brings a distinctive blend of corporate leadership, entrepreneurial acumen, and field-level extension expertise to Bangladesh's agricultural sector.</p>
+        <p class="bio-para">With over 8 years of field-level experience across geographically diverse settings including haor wetlands, hill tracts, and plains, he has consistently championed sustainable agriculture, digital extension services, and evidence-based crop management for smallholder farmers across Bangladesh.</p>
+
+        <div class="bio-section-title">Digital Innovation &amp; AgriTech Leadership</div>
+        <p class="bio-para">Moniruzzaman is a recognized Digital Transformer in Bangladesh's agricultural extension ecosystem. He actively develops and deploys AI-powered, data-driven tools that bring modern agricultural advisory services directly to farmers' doorsteps:</p>
+
+        <div class="bio-project">
+          <div class="bio-project-title">🌿 CABI Diagnosis Web App (2025–Present)</div>
+          <p>A pioneering React/Vite web application integrating Claude AI for crop disease diagnosis based on the globally acclaimed CABI Plantwise Ready Reckoner methodology. Features AI-powered diagnostic protocol, bilingual Bengali/English output with voice input, 94+ DAE-registered pesticides dataset, real-time weather integration, and Plantix-inspired UI.</p>
+        </div>
+
+        <div class="bio-project">
+          <div class="bio-project-title">📱 Krishi AI Mobile App</div>
+          <p>A React Native mobile application with Cloudflare Worker backend for AI-based crop advisory. Features MobileNetV2 TFLite crop disease detection, 17 agricultural tool screens with Bengali error messages, and zero API keys in the APK for secure deployment via EAS build pipeline.</p>
+        </div>
+
+        <div class="bio-project">
+          <div class="bio-project-title">🪪 কৃষক কার্ড — Krishak Card App</div>
+          <p>A Vercel-deployed React application serving as a digital farmer services portal. Includes live DAE market prices via market.dam.gov.bd with district selector, 30-minute edge caching, 11 integrated farmer services, and Noto Serif Bengali branding with Bangladesh national emblem.</p>
+        </div>
+
+        <div class="bio-project">
+          <div class="bio-project-title">🎮 স্বশিক্ষা কৃষি প্রকল্প — IPM/FFS Educational Game</div>
+          <p>A single-file HTML5 Bengali-language IPM decision game teaching a five-step methodology across three rice scenarios (Leaf Blast, Stem Borer, Nitrogen Deficiency), incorporating AI-generated SVG crop illustrations via the Anthropic API.</p>
+        </div>
+
+        <div class="bio-project">
+          <div class="bio-project-title">📺 AgriWisdom YouTube Channel (@AgriWisdomBd)</div>
+          <p>A Bengali-language agricultural extension YouTube channel producing AI-generated explainer videos on modern farming techniques, digital tools, and policy matters, semi-automated via Google Sheets + Apps Script with Claude API.</p>
+        </div>
+
+        <div class="bio-section-title">Additional Digital Contributions</div>
+        <div class="bio-bullet">Citizen Grievance App: Field-level digital service for farmer complaint management</div>
+        <div class="bio-bullet">GreenLoop 3.0: Smart AgriTech ecosystem project for agricultural transparency</div>
+        <div class="bio-bullet">Blockchain Fertilizer Tracking: Hyperledger Fabric-based subsidy diversion prevention system (SHA-256, NID-based role access)</div>
+        <div class="bio-bullet">31-Point State Reform Dashboard: Interactive Chart.js web app with PDF export and localStorage bookmarks</div>
+        <div class="bio-bullet">COVID-19 Data Automation: NID-based automatic data collection and harvesting labour movement tracking via Krishi Batayon</div>
+
+        <div class="bio-section-title">Corporate &amp; Entrepreneurial Career</div>
+        <div class="bio-career-item">
+          <div class="bio-career-icon">🏙️</div>
+          <div class="bio-career-text">
+            <h4>Nagar Krishak Limited — CEO &amp; Founder (2010–2011)</h4>
+            <p>Pioneered urban rooftop farming solutions for Dhaka city, addressing food safety and climate change challenges. First-mover in Bangladesh's urban agriculture movement.</p>
+          </div>
+        </div>
+        <div class="bio-career-item">
+          <div class="bio-career-icon">📡</div>
+          <div class="bio-career-text">
+            <h4>Transcom Mobile Ltd. (Samsung) — Area Sales Manager</h4>
+            <p>Managed large-scale regional sales force and drove business expansion for Samsung's Bangladeshi distribution arm.</p>
+          </div>
+        </div>
+        <div class="bio-career-item">
+          <div class="bio-career-icon">🎵</div>
+          <div class="bio-career-text">
+            <h4>SB Tel Ltd. (Symphony) — Assistant Regional Sales Manager</h4>
+            <p>Delivered sustained sales growth for Bangladesh's leading domestic mobile brand across multi-district operations.</p>
+          </div>
+        </div>
+        <div class="bio-career-item">
+          <div class="bio-career-icon">🌱</div>
+          <div class="bio-career-text">
+            <h4>Giant Agro Processing Ltd. (Bangla Seed) — Executive Officer</h4>
+            <p>Early-career agribusiness experience in seed systems, agro-processing, and rural supply chain operations.</p>
+          </div>
+        </div>
+
+        <div class="bio-section-title">Academic Qualifications</div>
+        <div class="bio-bullet">MBA — North South University, Dhaka</div>
+        <div class="bio-bullet">B.Sc. Agriculture — Hajee Mohammad Danesh Science &amp; Technology University (HSTU)</div>
+        <div class="bio-bullet">31st BCS (Agriculture) Cadre — Bangladesh Civil Service</div>
+
+      </div>
+    </div>
+  </section>
+
 
 </main>
 
@@ -1388,19 +1722,80 @@ function downloadUrl(fileId, mimeType) {
   return `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${apiKey}`;
 }
 
+/* ── Media Fullscreen Modal ── */
+const MFS_MODAL   = document.getElementById('media-fs-modal');
+const MFS_IFRAME  = document.getElementById('media-fs-iframe');
+const MFS_TITLE   = document.getElementById('mfs-title');
+const MFS_ICON    = document.getElementById('mfs-icon');
+const MFS_DL      = document.getElementById('mfs-dl-btn');
+const MFS_CLOSE   = document.getElementById('mfs-close-btn');
+const MFS_SPINNER = document.getElementById('media-fs-spinner');
+
+function openMediaFS(embedSrc, name, dlUrl, icon) {
+  MFS_TITLE.textContent = name;
+  MFS_ICON.textContent  = icon || '📄';
+  MFS_DL.href           = dlUrl;
+  MFS_SPINNER.classList.remove('hidden');
+  MFS_IFRAME.src        = '';
+  MFS_MODAL.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    MFS_IFRAME.src = embedSrc;
+    MFS_IFRAME.onload = () => MFS_SPINNER.classList.add('hidden');
+  }, 80);
+}
+
+function closeMediaFS() {
+  MFS_MODAL.classList.remove('open');
+  MFS_IFRAME.src = '';
+  document.body.style.overflow = '';
+}
+
+MFS_CLOSE.addEventListener('click', closeMediaFS);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && MFS_MODAL.classList.contains('open')) closeMediaFS();
+});
+
 /* ── Card Builders ── */
-function makeCarouselCard(embedSrc, name, dlUrl, ratioClass = 'ratio-16-9') {
+function makeCarouselCard(embedSrc, name, dlUrl, ratioClass = 'ratio-16-9', icon = '🎬', autoFS = false) {
   const card = document.createElement('div');
   card.className = 'media-card';
-  card.innerHTML = `
-    <div class="embed-container ${ratioClass}">
-      <iframe src="${embedSrc}" allowfullscreen allow="autoplay" loading="lazy"></iframe>
-    </div>
-    <div class="card-footer">
-      <span class="card-title" title="${name}">${name}</span>
-      <a class="btn-download" href="${dlUrl}" download target="_blank" rel="noopener">⬇ Export</a>
-    </div>
+
+  const embedDiv = document.createElement('div');
+  embedDiv.className = 'embed-container ' + ratioClass;
+
+  // For PDF and slides: clicking the embed area directly opens fullscreen
+  if (autoFS) {
+    // Overlay click-to-fullscreen instead of live iframe (avoids double-load)
+    embedDiv.style.cursor = 'pointer';
+    embedDiv.title = 'Click to open fullscreen';
+    embedDiv.innerHTML = `
+      <iframe src="${embedSrc}" allowfullscreen allow="autoplay fullscreen" loading="lazy"></iframe>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);cursor:pointer;z-index:2;" class="fs-overlay">
+        <div style="background:rgba(30,86,49,0.88);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;pointer-events:none;opacity:0;transition:opacity 0.2s;">⛶ Click to Fullscreen</div>
+      </div>`;
+    const overlay = embedDiv.querySelector('.fs-overlay');
+    overlay.addEventListener('mouseenter', () => overlay.querySelector('div').style.opacity = '1');
+    overlay.addEventListener('mouseleave', () => overlay.querySelector('div').style.opacity = '0');
+    overlay.addEventListener('click', () => openMediaFS(embedSrc, name, dlUrl, icon));
+  } else {
+    embedDiv.innerHTML = `<iframe src="${embedSrc}" allowfullscreen allow="autoplay" loading="lazy"></iframe>`;
+  }
+
+  const footer = document.createElement('div');
+  footer.className = 'card-footer';
+  footer.innerHTML = `
+    <span class="card-title" title="${name}">${name}</span>
+    ${autoFS ? `<button class="btn-fullscreen-card" title="Open fullscreen">⛶</button>` : ''}
+    <a class="btn-download" href="${dlUrl}" download target="_blank" rel="noopener">⬇ Export</a>
   `;
+
+  if (autoFS) {
+    footer.querySelector('.btn-fullscreen-card').addEventListener('click', () => openMediaFS(embedSrc, name, dlUrl, icon));
+  }
+
+  card.appendChild(embedDiv);
+  card.appendChild(footer);
   return card;
 }
 
@@ -1483,7 +1878,9 @@ async function loadFolder() {
         slidesEmbedUrl(f.id, f.mimeType),
         f.name,
         downloadUrl(f.id, f.mimeType),
-        'ratio-4-3'
+        'ratio-4-3',
+        '📊',
+        true   // autoFS: click opens fullscreen directly
       );
       card.style.animationDelay = `${i * 60}ms`;
       document.getElementById('track-slides').appendChild(card);
@@ -1496,7 +1893,9 @@ async function loadFolder() {
         pdfEmbedUrl(f.id),
         f.name,
         downloadUrl(f.id, f.mimeType),
-        'ratio-pdf'
+        'ratio-pdf',
+        '📄',
+        true   // autoFS: click opens fullscreen directly
       );
       card.style.animationDelay = `${i * 60}ms`;
       document.getElementById('track-pdf').appendChild(card);
@@ -1692,6 +2091,82 @@ function renderLinks() {
   });
 }
 
+
+/* ── Apps Hub ── */
+const MY_APPS = [
+  {
+    title: 'উদ্ভিদ গোয়েন্দা — Plant Detective',
+    desc: 'AI-powered crop disease diagnosis (CABI Plantwise)',
+    url: 'https://diagnosis.krishiai.live/',
+    icon: '🌿',
+    color: 'linear-gradient(135deg,#1E5631,#4A7C3F)'
+  },
+  {
+    title: 'GreenLoop 3.0',
+    desc: 'Smart AgriTech ecosystem — CIRDAP',
+    url: 'https://cirdap-greenloop3-0.vercel.app/',
+    icon: '♻️',
+    color: 'linear-gradient(135deg,#0D6B3E,#27AE60)'
+  },
+  {
+    title: 'Krishi AI (Beta)',
+    desc: 'AI-based crop advisory platform',
+    url: 'https://krishiai-qne9m764s-krishi-ai-team.vercel.app/',
+    icon: '🤖',
+    color: 'linear-gradient(135deg,#1A237E,#3949AB)'
+  },
+  {
+    title: 'Krishi AI Web',
+    desc: 'Full Krishi AI web portal for farmers',
+    url: 'https://web.krishiai.live/',
+    icon: '🌾',
+    color: 'linear-gradient(135deg,#7B4F2E,#B87333)'
+  }
+];
+
+function renderApps() {
+  const grid = document.getElementById('apps-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  MY_APPS.forEach((app, i) => {
+    const card = document.createElement('div');
+    card.className = 'app-card';
+    card.style.animationDelay = (i * 80) + 'ms';
+
+    // Preview iframe
+    const iframe = document.createElement('iframe');
+    iframe.src = app.url;
+    iframe.title = app.title;
+    iframe.loading = 'lazy';
+    iframe.className = 'app-card-preview';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation');
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'app-card-body';
+    body.innerHTML = `
+      <div class="app-badge" style="background:${app.color}">${app.icon}</div>
+      <div class="app-meta">
+        <div class="app-title">${app.title}</div>
+        <div class="app-desc">${app.desc}</div>
+      </div>
+      <div class="app-actions">
+        <a class="btn-app-open" href="${app.url}" target="_blank" rel="noopener">↗ Open</a>
+        <button class="btn-app-fs">⛶</button>
+      </div>
+    `;
+    body.querySelector('.btn-app-fs').addEventListener('click', () =>
+      openMediaFS(app.url, app.title, app.url, app.icon)
+    );
+
+    card.appendChild(iframe);
+    card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+
+renderApps();
+
 renderLinks();
 
 /* ── Auto-load if API key exists ── */
@@ -1699,5 +2174,20 @@ if (apiKey && FOLDER_INPUT.value.trim()) {
   loadFolder();
 }
 </script>
+
+<!-- ── MEDIA FULLSCREEN MODAL ───────────────────────── -->
+<div id="media-fs-modal">
+  <div class="media-fs-bar">
+    <span style="font-size:18px;flex-shrink:0" id="mfs-icon">📄</span>
+    <span class="media-fs-bar-title" id="mfs-title">Loading…</span>
+    <a class="btn-mfs-dl" id="mfs-dl-btn" href="#" download target="_blank" rel="noopener">⬇ Download</a>
+    <button class="btn-mfs-close" id="mfs-close-btn">✕ Close</button>
+  </div>
+  <div id="media-fs-frame-wrap">
+    <div id="media-fs-spinner"><div class="spinner"></div> Loading…</div>
+    <iframe id="media-fs-iframe" src="" allowfullscreen allow="fullscreen autoplay" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+  </div>
+</div>
+
 </body>
 </html>
