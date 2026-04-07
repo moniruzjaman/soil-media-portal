@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>কৃষি মিডিয়া পোর্টাল | AgriMedia Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── DESIGN TOKENS ─────────────────────────────── */
+  :root {
+    --soil:      #2C1A0E;
+    --leaf:      #1E5631;
+    --paddy:     #4A7C3F;
+    --sun:       #F4A622;
+    --cream:     #FBF5EC;
+    --mist:      #EAF2E6;
+    --sand:      #E8D8BF;
+    --bark:      #7B4F2E;
+    --sky:       #C8E6F0;
+    --text-main: #1A1208;
+    --text-soft: #5C4A2A;
+    --card-bg:   #FFFFFF;
+    --radius:    14px;
+    --shadow:    0 4px 24px rgba(44,26,14,0.10);
+    --shadow-lg: 0 8px 40px rgba(44,26,14,0.16);
+    --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND TEXTURE ────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(74,124,63,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 90% 80%, rgba(244,166,34,0.07) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='%234A7C3F' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ────────────────────────────────────── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(44, 26, 14, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--sun);
+    padding: 0 clamp(16px, 4vw, 48px);
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 64px;
+    justify-content: space-between;
+  }
+
+  .logo-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--leaf), var(--paddy));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    color: var(--sun);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Folder Input */
+  .folder-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    max-width: 520px;
+  }
+
+  .folder-input {
+    flex: 1;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: var(--cream);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color var(--transition);
+    min-width: 0;
+  }
+
+  .folder-input::placeholder { color: rgba(255,255,255,0.35); }
+  .folder-input:focus { border-color: var(--sun); }
+
+  .btn-load {
+    padding: 8px 18px;
+    background: var(--sun);
+    color: var(--soil);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity var(--transition), transform var(--transition);
+  }
+
+  .btn-load:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-load:active { transform: translateY(0); }
+
+  /* ── STATUS BAR ────────────────────────────────── */
+  .status-bar {
+    background: var(--leaf);
+    color: var(--cream);
+    font-size: 13px;
+    text-align: center;
+    padding: 10px 24px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .status-bar.show { display: flex; }
+
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── MAIN ──────────────────────────────────────── */
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 48px) clamp(16px, 4vw, 48px);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── LANDING HERO ──────────────────────────────── */
+  #hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 52vh;
+    text-align: center;
+    gap: 20px;
+    padding: 40px 16px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--mist);
+    border: 1.5px solid var(--paddy);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--leaf);
+    font-weight: 500;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 64px);
+    color: var(--soil);
+    line-height: 1.1;
+  }
+
+  .hero-title span { color: var(--paddy); }
+
+  .hero-desc {
+    max-width: 520px;
+    color: var(--text-soft);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .hero-guide {
+    background: var(--mist);
+    border-left: 4px solid var(--paddy);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: left;
+    max-width: 560px;
+    width: 100%;
+  }
+
+  .hero-guide h4 { font-size: 13px; color: var(--leaf); font-weight: 600; margin-bottom: 8px; }
+
+  .hero-guide ol {
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.9;
+  }
+
+  /* ── SECTION ───────────────────────────────────── */
+  .section {
+    margin-bottom: 52px;
+    display: none;
+  }
+
+  .section.show { display: block; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid var(--sand);
+  }
+
+  .section-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .section-icon.video  { background: linear-gradient(135deg, #1E5631, #4A7C3F); }
+  .section-icon.slides { background: linear-gradient(135deg, #7B4F2E, #B87333); }
+  .section-icon.pdf    { background: linear-gradient(135deg, #C0392B, #E74C3C); }
+  .section-icon.image  { background: linear-gradient(135deg, #1A5276, #2980B9); }
+
+  .section-meta h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--soil);
+    line-height: 1.1;
+  }
+
+  .section-meta p {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-top: 3px;
+  }
+
+  .item-count {
+    margin-left: auto;
+    background: var(--mist);
+    border: 1px solid var(--paddy);
+    color: var(--leaf);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  /* ── CAROUSEL ──────────────────────────────────── */
+  .carousel-wrap {
+    position: relative;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--paddy) var(--mist);
+  }
+
+  .carousel-track::-webkit-scrollbar { height: 5px; }
+  .carousel-track::-webkit-scrollbar-track { background: var(--mist); border-radius: 99px; }
+  .carousel-track::-webkit-scrollbar-thumb { background: var(--paddy); border-radius: 99px; }
+
+  /* ── MEDIA CARD ────────────────────────────────── */
+  .media-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(74,124,63,0.12);
+    flex: 0 0 auto;
+    width: clamp(260px, 38vw, 380px);
+    scroll-snap-align: start;
+    overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .media-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Video embed */
+  .embed-container {
+    width: 100%;
+    position: relative;
+    background: #000;
+    border-radius: 0;
+  }
+
+  .embed-container.ratio-16-9 { padding-bottom: 56.25%; }
+  .embed-container.ratio-4-3  { padding-bottom: 75%; }
+  .embed-container.ratio-pdf  { padding-bottom: 70%; }
+
+  .embed-container iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+
+  /* Card footer */
+  .card-footer {
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: var(--mist);
+    border: 1.5px solid var(--paddy);
+    color: var(--leaf);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition);
+    flex-shrink: 0;
+  }
+
+  .btn-download:hover {
+    background: var(--leaf);
+    color: #fff;
+    border-color: var(--leaf);
+  }
+
+  /* ── IMAGE GRID ─────────────────────────────────── */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .image-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(74,124,63,0.12);
+    overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+    cursor: pointer;
+  }
+
+  .image-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .image-card img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    background: var(--mist);
+  }
+
+  .image-card .card-footer { background: #fff; border-top: 1px solid var(--mist); }
+
+  /* ── LIGHTBOX ───────────────────────────────────── */
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,18,8,0.94);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  #lightbox.open { display: flex; }
+
+  #lightbox img {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+  }
+
+  .lightbox-close {
+    position: fixed;
+    top: 20px; right: 24px;
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--transition);
+  }
+
+  .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
+  /* ── EMPTY STATE ────────────────────────────────── */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 24px;
+    color: var(--text-soft);
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .empty-state span { font-size: 36px; }
+
+  /* ── ERROR TOAST ────────────────────────────────── */
+  #toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #C0392B;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    max-width: 92vw;
+    text-align: center;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.2);
+  }
+
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── FOOTER ─────────────────────────────────────── */
+  footer {
+    background: var(--soil);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    font-size: 12px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer strong { color: var(--sun); }
+
+  /* ── SETUP GUIDE MODAL ──────────────────────────── */
+  #guide-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,18,8,0.82);
+    z-index: 900;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  #guide-modal.open { display: flex; }
+
+  .guide-box {
+    background: #fff;
+    border-radius: 18px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+
+  .guide-box h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--soil);
+    margin-bottom: 20px;
+  }
+
+  .guide-step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 28px; height: 28px;
+    background: var(--leaf);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .guide-step p { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+  .guide-step code {
+    background: var(--mist);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--leaf);
+    word-break: break-all;
+  }
+
+  .guide-box .btn-load { display: block; width: 100%; margin-top: 20px; padding: 12px; font-size: 15px; }
+
+  /* ── RESPONSIVE ─────────────────────────────────── */
+  @media (max-width: 640px) {
+    .folder-bar { max-width: none; }
+    .logo-sub { display: none; }
+    .media-card { width: clamp(240px, 80vw, 340px); }
+    .image-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  }
+
+  /* ── ANIMATIONS ─────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section.show { animation: fadeUp 0.45s ease both; }
+  .media-card   { animation: fadeUp 0.4s ease both; }
+  .image-card   { animation: fadeUp 0.4s ease both; }
+
+  .api-key-wrap {
+    display: flex; gap: 8px; align-items: center; margin-top: 6px;
+  }
+
+  .api-key-input {
+    flex: 1;
+    padding: 7px 12px;
+    border: 1.5px solid var(--sand);
+    border-radius: 7px;
+    font-size: 13px;
+    color: var(--text-main);
+    background: var(--cream);
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .api-key-input:focus { border-color: var(--paddy); }
+
+  label.field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--leaf);
+    display: block;
+    margin-bottom: 4px;
+    margin-top: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ────────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <div class="logo-group">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">
+        <span class="logo-title">AgriMedia Portal</span>
+        <span class="logo-sub">DAE · কৃষি সম্প্রসারণ</span>
+      </div>
+    </div>
+    <div class="folder-bar">
+      <input
+        type="text"
+        class="folder-input"
+        id="folder-id-input"
+        placeholder="Google Drive Folder ID or URL…"
+        value="1TS_LrhKbKW-RXKtDkxzVfhp10j_0rNCX"
+      >
+      <button class="btn-load" id="btn-load-folder">Load ▶</button>
+      <button class="btn-load" style="background:rgba(255,255,255,0.15);color:#fff;" id="btn-setup" title="Setup Guide">⚙</button>
+    </div>
+  </div>
+</header>
+
+<!-- STATUS BAR -->
+<div class="status-bar" id="status-bar">
+  <div class="spinner"></div>
+  <span id="status-text">Loading content from Google Drive…</span>
+</div>
+
+<!-- ── MAIN ──────────────────────────────────────────── -->
+<main>
+
+  <!-- HERO / Landing -->
+  <div id="hero">
+    <div class="hero-badge">🌿 Multimedia Extension Content Hub</div>
+    <h1 class="hero-title">কৃষি মিডিয়া <span>পোর্টাল</span></h1>
+    <p class="hero-desc">
+      Instantly display videos, presentations, PDFs, and infographics from any public Google Drive folder — inline, downloadable, and mobile-ready.
+    </p>
+    <div class="hero-guide">
+      <h4>⚡ Quick Start</h4>
+      <ol>
+        <li>Click <strong>⚙ Setup</strong> in the header to configure your API key</li>
+        <li>Paste your Google Drive folder URL or ID in the box above</li>
+        <li>Click <strong>Load ▶</strong> — content appears instantly</li>
+        <li>Download any file with the <strong>⬇ Export</strong> button</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- VIDEOS SECTION -->
+  <section class="section" id="section-video">
+    <div class="section-header">
+      <div class="section-icon video">🎬</div>
+      <div class="section-meta">
+        <h2>Videos</h2>
+        <p>Inline playable — full-screen supported</p>
+      </div>
+      <span class="item-count" id="count-video">0 items</span>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel-track" id="track-video"></div>
+    </div>
+  </section>
+
+  <!-- PRESENTATIONS SECTION -->
+  <section class="section" id="section-slides">
+    <div class="section-header">
+      <div class="section-icon slides">📊</div>
+      <div class="section-meta">
+        <h2>Presentations</h2>
+        <p>Google Slides — embedded viewer</p>
+      </div>
+      <span class="item-count" id="count-slides">0 items</span>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel-track" id="track-slides"></div>
+    </div>
+  </section>
+
+  <!-- PDFs SECTION -->
+  <section class="section" id="section-pdf">
+    <div class="section-header">
+      <div class="section-icon pdf">📄</div>
+      <div class="section-meta">
+        <h2>PDF Slide Decks</h2>
+        <p>Fully readable inline viewer</p>
+      </div>
+      <span class="item-count" id="count-pdf">0 items</span>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel-track" id="track-pdf"></div>
+    </div>
+  </section>
+
+  <!-- IMAGES SECTION -->
+  <section class="section" id="section-image">
+    <div class="section-header">
+      <div class="section-icon image">🖼</div>
+      <div class="section-meta">
+        <h2>Infographics</h2>
+        <p>Click to enlarge — downloadable</p>
+      </div>
+      <span class="item-count" id="count-image">0 items</span>
+    </div>
+    <div class="image-grid" id="grid-image"></div>
+  </section>
+
+</main>
+
+<!-- ── LIGHTBOX ──────────────────────────────────────── -->
+<div id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">✕</button>
+  <img src="" alt="" id="lightbox-img">
+</div>
+
+<!-- ── SETUP GUIDE MODAL ─────────────────────────────── -->
+<div id="guide-modal">
+  <div class="guide-box">
+    <h3>⚙️ Setup Guide</h3>
+
+    <label class="field-label">Google Drive API Key</label>
+    <div class="api-key-wrap">
+      <input type="password" class="api-key-input" id="api-key-input" placeholder="AIza…your key here…">
+    </div>
+
+    <p style="font-size:12px;color:#888;margin-top:6px;">
+      Key is stored only in your browser's local storage — never sent anywhere except Google APIs.
+    </p>
+
+    <div style="margin-top:24px;">
+      <div class="guide-step">
+        <div class="step-num">1</div>
+        <p>Go to <a href="https://console.cloud.google.com/" target="_blank" style="color:var(--leaf)">Google Cloud Console</a> → Create a project → Enable <strong>Google Drive API</strong>.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">2</div>
+        <p>Go to <strong>APIs & Services → Credentials → Create Credentials → API Key</strong>. Copy the key and paste it above.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">3</div>
+        <p>Restrict the key: under <strong>API restrictions</strong> → select <strong>Google Drive API</strong>. Under <strong>Application restrictions</strong> → select <em>HTTP referrers</em> and add your site URL.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">4</div>
+        <p>Open your Google Drive folder → click <strong>Share</strong> → change access to <strong>"Anyone with the link"</strong>. The folder ID is the part of the URL after <code>/folders/</code>.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">5</div>
+        <p>Paste the folder ID or full URL into the header bar and click <strong>Load ▶</strong>.</p>
+      </div>
+    </div>
+
+    <button class="btn-load" id="btn-save-key">💾 Save Key &amp; Close</button>
+    <button onclick="closeGuide()" style="display:block;width:100%;margin-top:10px;padding:10px;background:none;border:1.5px solid var(--sand);border-radius:8px;cursor:pointer;font-size:14px;color:var(--text-soft);">Cancel</button>
+  </div>
+</div>
+
+<!-- ── TOAST ─────────────────────────────────────────── -->
+<div id="toast"></div>
+
+<!-- ── FOOTER ────────────────────────────────────────── -->
+<footer>
+  AgriMedia Portal &nbsp;·&nbsp; Built for <strong>DAE Bangladesh</strong> &nbsp;·&nbsp;
+  Department of Agricultural Extension &nbsp;·&nbsp; কৃষি সম্প্রসারণ অধিদপ্তর
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   AgriMedia Portal — Core JS
+   Fetches Google Drive folder contents via Drive API v3
+   and renders videos, slides, PDFs, and images inline.
+═══════════════════════════════════════════════════════ */
+
+const FOLDER_INPUT   = document.getElementById('folder-id-input');
+const BTN_LOAD       = document.getElementById('btn-load-folder');
+const BTN_SETUP      = document.getElementById('btn-setup');
+const STATUS_BAR     = document.getElementById('status-bar');
+const STATUS_TEXT    = document.getElementById('status-text');
+const HERO           = document.getElementById('hero');
+const GUIDE_MODAL    = document.getElementById('guide-modal');
+const API_KEY_INPUT  = document.getElementById('api-key-input');
+const BTN_SAVE_KEY   = document.getElementById('btn-save-key');
+const LIGHTBOX       = document.getElementById('lightbox');
+const LIGHTBOX_IMG   = document.getElementById('lightbox-img');
+const LIGHTBOX_CLOSE = document.getElementById('lightbox-close');
+const TOAST          = document.getElementById('toast');
+
+/* ── State ── */
+let apiKey = localStorage.getItem('gd_api_key') || '';
+if (apiKey) API_KEY_INPUT.value = apiKey;
+
+/* ── Helpers ── */
+function extractFolderId(input) {
+  input = input.trim();
+  const m = input.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{10,}$/.test(input)) return input;
+  return null;
+}
+
+function showStatus(msg) {
+  STATUS_TEXT.textContent = msg;
+  STATUS_BAR.classList.add('show');
+}
+
+function hideStatus() { STATUS_BAR.classList.remove('show'); }
+
+function showToast(msg, duration = 4000) {
+  TOAST.textContent = msg;
+  TOAST.classList.add('show');
+  setTimeout(() => TOAST.classList.remove('show'), duration);
+}
+
+function setCount(id, n) {
+  document.getElementById('count-' + id).textContent = n + (n === 1 ? ' item' : ' items');
+}
+
+function openGuide()  { GUIDE_MODAL.classList.add('open'); }
+function closeGuide() { GUIDE_MODAL.classList.remove('open'); }
+
+/* ── Setup Modal ── */
+BTN_SETUP.addEventListener('click', openGuide);
+BTN_SAVE_KEY.addEventListener('click', () => {
+  const k = API_KEY_INPUT.value.trim();
+  if (!k) { showToast('Please enter an API key.'); return; }
+  apiKey = k;
+  localStorage.setItem('gd_api_key', k);
+  closeGuide();
+  showToast('✅ API key saved!', 2500);
+});
+GUIDE_MODAL.addEventListener('click', e => { if (e.target === GUIDE_MODAL) closeGuide(); });
+
+/* ── Lightbox ── */
+LIGHTBOX_CLOSE.addEventListener('click', () => LIGHTBOX.classList.remove('open'));
+LIGHTBOX.addEventListener('click', e => { if (e.target === LIGHTBOX) LIGHTBOX.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') LIGHTBOX.classList.remove('open'); });
+
+function openLightbox(src) {
+  LIGHTBOX_IMG.src = src;
+  LIGHTBOX.classList.add('open');
+}
+
+/* ── Mime type classification ── */
+const MIME_VIDEO = [
+  'video/mp4','video/webm','video/ogg','video/avi',
+  'video/quicktime','video/x-msvideo','video/3gpp','video/mpeg'
+];
+const MIME_SLIDES = [
+  'application/vnd.google-apps.presentation',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+];
+const MIME_PDF = ['application/pdf'];
+const MIME_IMAGE = ['image/png','image/jpeg','image/gif','image/webp','image/svg+xml','image/bmp'];
+
+function classify(mimeType) {
+  if (MIME_VIDEO.includes(mimeType))  return 'video';
+  if (MIME_SLIDES.includes(mimeType)) return 'slides';
+  if (MIME_PDF.includes(mimeType))    return 'pdf';
+  if (MIME_IMAGE.includes(mimeType))  return 'image';
+  return null;
+}
+
+/* ── Drive API fetch (paginates up to 1000 files) ── */
+async function fetchDriveFiles(folderId) {
+  if (!apiKey) {
+    openGuide();
+    throw new Error('API key not set. Please configure it via Setup ⚙.');
+  }
+  let files = [], pageToken = null;
+  const fields = 'nextPageToken,files(id,name,mimeType,thumbnailLink,webViewLink)';
+  const base = `https://www.googleapis.com/drive/v3/files`;
+  do {
+    let url = `${base}?q=${encodeURIComponent(`'${folderId}' in parents and trashed=false`)}&fields=${encodeURIComponent(fields)}&pageSize=100&key=${apiKey}`;
+    if (pageToken) url += `&pageToken=${pageToken}`;
+    showStatus(`Fetching files… (${files.length} loaded)`);
+    const res = await fetch(url);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Drive API error ${res.status}`);
+    }
+    const data = await res.json();
+    files = files.concat(data.files || []);
+    pageToken = data.nextPageToken || null;
+  } while (pageToken);
+  return files;
+}
+
+/* ── Embed URL builders ── */
+function videoEmbedUrl(fileId) {
+  // Drive inline viewer — allows play + fullscreen
+  return `https://drive.google.com/file/d/${fileId}/preview`;
+}
+
+function slidesEmbedUrl(fileId, mimeType) {
+  if (mimeType === 'application/vnd.google-apps.presentation') {
+    return `https://docs.google.com/presentation/d/${fileId}/embed?start=false&loop=false&delayms=3000`;
+  }
+  // PPTX uploaded to Drive — use Drive viewer
+  return `https://drive.google.com/file/d/${fileId}/preview`;
+}
+
+function pdfEmbedUrl(fileId) {
+  // Drive PDF viewer — inline, no redirect
+  return `https://drive.google.com/file/d/${fileId}/preview`;
+}
+
+function imageDirectUrl(fileId) {
+  // Thumbnail for grid display (640px width)
+  return `https://lh3.googleusercontent.com/d/${fileId}=w640`;
+}
+
+function downloadUrl(fileId, mimeType) {
+  // Google Docs types need export
+  const exportMimes = {
+    'application/vnd.google-apps.presentation': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+  };
+  if (exportMimes[mimeType]) {
+    return `https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=${encodeURIComponent(exportMimes[mimeType])}&key=${apiKey}`;
+  }
+  return `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${apiKey}`;
+}
+
+/* ── Card Builders ── */
+function makeCarouselCard(embedSrc, name, dlUrl, ratioClass = 'ratio-16-9') {
+  const card = document.createElement('div');
+  card.className = 'media-card';
+  card.innerHTML = `
+    <div class="embed-container ${ratioClass}">
+      <iframe src="${embedSrc}" allowfullscreen allow="autoplay" loading="lazy"></iframe>
+    </div>
+    <div class="card-footer">
+      <span class="card-title" title="${name}">${name}</span>
+      <a class="btn-download" href="${dlUrl}" download target="_blank" rel="noopener">⬇ Export</a>
+    </div>
+  `;
+  return card;
+}
+
+function makeImageCard(fileId, name, dlUrl) {
+  const card = document.createElement('div');
+  card.className = 'image-card';
+  const imgSrc = imageDirectUrl(fileId);
+  card.innerHTML = `
+    <img src="${imgSrc}" alt="${name}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 150%22><rect fill=%22%23eaf2e6%22 width=%22200%22 height=%22150%22/><text x=%2250%%22 y=%2250%%22 fill=%22%234a7c3f%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2240%22>🖼</text></svg>'">
+    <div class="card-footer">
+      <span class="card-title" title="${name}">${name}</span>
+      <a class="btn-download" href="${dlUrl}" download target="_blank" rel="noopener">⬇ Export</a>
+    </div>
+  `;
+  card.querySelector('img').addEventListener('click', () => openLightbox(imgSrc));
+  return card;
+}
+
+/* ── Show/Hide section ── */
+function showSection(id, count) {
+  const sec = document.getElementById('section-' + id);
+  if (count > 0) {
+    sec.classList.add('show');
+    setCount(id, count);
+  } else {
+    sec.classList.remove('show');
+  }
+}
+
+/* ── Main Render ── */
+async function loadFolder() {
+  const raw    = FOLDER_INPUT.value.trim();
+  const folder = extractFolderId(raw);
+
+  if (!folder) {
+    showToast('❌ Invalid folder URL or ID. Please check and try again.');
+    return;
+  }
+
+  // Clear previous content
+  ['video','slides','pdf'].forEach(t => document.getElementById('track-' + t).innerHTML = '');
+  document.getElementById('grid-image').innerHTML = '';
+  ['video','slides','pdf','image'].forEach(t => document.getElementById('section-' + t).classList.remove('show'));
+  HERO.style.display = 'none';
+  showStatus('Connecting to Google Drive…');
+  BTN_LOAD.disabled = true;
+
+  try {
+    const files = await fetchDriveFiles(folder);
+    if (!files.length) {
+      showToast('⚠️ No files found. Check folder ID and sharing permissions.');
+      HERO.style.display = '';
+      return;
+    }
+
+    const buckets = { video: [], slides: [], pdf: [], image: [] };
+    files.forEach(f => {
+      const type = classify(f.mimeType);
+      if (type) buckets[type].push(f);
+    });
+
+    showStatus(`Rendering ${files.length} files…`);
+
+    // Videos
+    buckets.video.forEach((f, i) => {
+      const card = makeCarouselCard(
+        videoEmbedUrl(f.id),
+        f.name,
+        downloadUrl(f.id, f.mimeType),
+        'ratio-16-9'
+      );
+      card.style.animationDelay = `${i * 60}ms`;
+      document.getElementById('track-video').appendChild(card);
+    });
+    showSection('video', buckets.video.length);
+
+    // Slides
+    buckets.slides.forEach((f, i) => {
+      const card = makeCarouselCard(
+        slidesEmbedUrl(f.id, f.mimeType),
+        f.name,
+        downloadUrl(f.id, f.mimeType),
+        'ratio-4-3'
+      );
+      card.style.animationDelay = `${i * 60}ms`;
+      document.getElementById('track-slides').appendChild(card);
+    });
+    showSection('slides', buckets.slides.length);
+
+    // PDFs
+    buckets.pdf.forEach((f, i) => {
+      const card = makeCarouselCard(
+        pdfEmbedUrl(f.id),
+        f.name,
+        downloadUrl(f.id, f.mimeType),
+        'ratio-pdf'
+      );
+      card.style.animationDelay = `${i * 60}ms`;
+      document.getElementById('track-pdf').appendChild(card);
+    });
+    showSection('pdf', buckets.pdf.length);
+
+    // Images
+    buckets.image.forEach((f, i) => {
+      const card = makeImageCard(f.id, f.name, downloadUrl(f.id, f.mimeType));
+      card.style.animationDelay = `${i * 50}ms`;
+      document.getElementById('grid-image').appendChild(card);
+    });
+    showSection('image', buckets.image.length);
+
+    const total = Object.values(buckets).reduce((s, a) => s + a.length, 0);
+    showStatus(`✅ Loaded ${total} items · ${buckets.video.length} videos · ${buckets.slides.length} slides · ${buckets.pdf.length} PDFs · ${buckets.image.length} images`);
+    setTimeout(hideStatus, 3500);
+
+  } catch (err) {
+    hideStatus();
+    HERO.style.display = '';
+    showToast('❌ ' + err.message);
+    console.error(err);
+  } finally {
+    BTN_LOAD.disabled = false;
+  }
+}
+
+BTN_LOAD.addEventListener('click', loadFolder);
+FOLDER_INPUT.addEventListener('keydown', e => { if (e.key === 'Enter') loadFolder(); });
+
+/* ── Auto-load if API key exists ── */
+if (apiKey && FOLDER_INPUT.value.trim()) {
+  loadFolder();
+}
+</script>
+</body>
+</html>
