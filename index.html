@@ -506,6 +506,103 @@
 
   #toast.show { transform: translateX(-50%) translateY(0); }
 
+  /* ── QUICK LINKS SECTION ────────────────────────── */
+  #section-links {
+    margin-bottom: 52px;
+  }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  .link-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(74,124,63,0.14);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition), box-shadow var(--transition);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .link-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--paddy);
+  }
+
+  .link-card-preview {
+    width: 100%;
+    height: 180px;
+    border: none;
+    background: var(--mist);
+    pointer-events: none;
+    display: block;
+  }
+
+  .link-card-body {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1.5px solid var(--mist);
+    flex-shrink: 0;
+  }
+
+  .link-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .link-icon.gemini { background: linear-gradient(135deg, #1A73E8, #4285F4); }
+  .link-icon.blog   { background: linear-gradient(135deg, #1565C0, #0D47A1); }
+
+  .link-meta { flex: 1; min-width: 0; }
+
+  .link-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .link-url {
+    font-size: 11px;
+    color: var(--text-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+
+  .btn-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 13px;
+    background: var(--leaf);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity var(--transition);
+    flex-shrink: 0;
+  }
+
+  .btn-open:hover { opacity: 0.82; }
+
   /* ── FOOTER ─────────────────────────────────────── */
   footer {
     background: var(--soil);
@@ -726,6 +823,18 @@
     <div class="carousel-wrap">
       <div class="carousel-track" id="track-pdf"></div>
     </div>
+  </section>
+
+  <!-- QUICK LINKS SECTION — always visible -->
+  <section id="section-links">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#1A73E8,#0D47A1)">🔗</div>
+      <div class="section-meta">
+        <h2>Featured Links</h2>
+        <p>AI Reports · Overview · Blog — open in new tab</p>
+      </div>
+    </div>
+    <div class="links-grid" id="links-grid"></div>
   </section>
 
   <!-- IMAGES SECTION -->
@@ -1096,6 +1205,67 @@ async function loadFolder() {
 
 BTN_LOAD.addEventListener('click', loadFolder);
 FOLDER_INPUT.addEventListener('keydown', e => { if (e.key === 'Enter') loadFolder(); });
+
+
+/* ── Featured Links ── */
+const FEATURED_LINKS = [
+  {
+    title: 'Charland AI Powered Report',
+    url: 'https://g.co/gemini/share/1782aa6bd6d6',
+    icon: '✨',
+    iconClass: 'gemini',
+    short: 'g.co/gemini/share/1782aa6bd6d6'
+  },
+  {
+    title: 'Kurigram Overview',
+    url: 'https://g.co/gemini/share/02295acc0b85',
+    icon: '🗺️',
+    iconClass: 'gemini',
+    short: 'g.co/gemini/share/02295acc0b85'
+  },
+  {
+    title: 'TechCorrior Blog',
+    url: 'https://techcorrior.wordpress.com/',
+    icon: '📝',
+    iconClass: 'blog',
+    short: 'techcorrior.wordpress.com'
+  }
+];
+
+function renderLinks() {
+  const grid = document.getElementById('links-grid');
+  grid.innerHTML = '';
+  FEATURED_LINKS.forEach((lk, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'link-card-wrap';
+    wrap.style.cssText = 'display:flex;flex-direction:column;background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1.5px solid rgba(74,124,63,0.14);overflow:hidden;transition:transform var(--transition),box-shadow var(--transition);animation:fadeUp 0.4s ease both;animation-delay:' + (i*80) + 'ms';
+    wrap.addEventListener('mouseenter', () => { wrap.style.transform='translateY(-5px)'; wrap.style.boxShadow='var(--shadow-lg)'; wrap.style.borderColor='var(--paddy)'; });
+    wrap.addEventListener('mouseleave', () => { wrap.style.transform=''; wrap.style.boxShadow='var(--shadow)'; wrap.style.borderColor='rgba(74,124,63,0.14)'; });
+    // iframe preview
+    const iframe = document.createElement('iframe');
+    iframe.src = lk.url;
+    iframe.title = lk.title;
+    iframe.loading = 'lazy';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');
+    iframe.style.cssText = 'width:100%;height:190px;border:none;background:var(--mist);display:block;pointer-events:none;';
+    // body
+    const body = document.createElement('div');
+    body.className = 'link-card-body';
+    body.innerHTML = `
+      <div class="link-icon ${lk.iconClass}">${lk.icon}</div>
+      <div class="link-meta">
+        <div class="link-title">${lk.title}</div>
+        <div class="link-url">${lk.short}</div>
+      </div>
+      <a class="btn-open" href="${lk.url}" target="_blank" rel="noopener">↗ Open</a>
+    `;
+    wrap.appendChild(iframe);
+    wrap.appendChild(body);
+    grid.appendChild(wrap);
+  });
+}
+
+renderLinks();
 
 /* ── Auto-load if API key exists ── */
 if (apiKey && FOLDER_INPUT.value.trim()) {
