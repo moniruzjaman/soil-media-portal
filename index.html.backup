@@ -1243,27 +1243,28 @@
 
 <!-- ── HEADER ────────────────────────────────────────── -->
 <header>
-<div class="header-inner">
-     <div class="logo-group">
-       <div class="logo-icon">🌾</div>
-       <div class="logo-text">
-         <span class="logo-title">AgriMedia Portal</span>
-         <span class="logo-sub">DAE · কৃষি সম্প্রসারণ</span>
-       </div>
-     </div>
-     <div class="folder-bar">
-        <input
-          type="text"
-          class="folder-input"
-          id="folder-id-input"
-          placeholder="Google Drive Folder ID or URL…"
-          value="1TS_LrhKbKW-RXKtDkxzVfhp10j_0rNCX"
-          readonly
-        >
-        <button class="btn-load" id="btn-load-folder" style="display: none;">Load ▶</button>
+  <div class="header-inner">
+    <div class="logo-group">
+      <div class="logo-icon">🌾</div>
+      <div class="logo-text">
+        <span class="logo-title">AgriMedia Portal</span>
+        <span class="logo-sub">DAE · কৃষি সম্প্রসারণ</span>
       </div>
-   </div>
- </header>
+    </div>
+    <div class="folder-bar">
+      <input
+        type="text"
+        class="folder-input"
+        id="folder-id-input"
+        placeholder="Google Drive Folder ID or URL…"
+        value="1TS_LrhKbKW-RXKtDkxzVfhp10j_0rNCX"
+      >
+      <button class="btn-load" id="btn-load-folder">Load ▶</button>
+      <button class="btn-load" style="background:rgba(255,255,255,0.15);color:#fff;" id="btn-setup" title="Setup Guide">⚙</button>
+      <button class="qr-btn" id="btn-qr" title="Scan QR to visit portal"><img src="qr-code.jpg" alt="QR Code"></button>
+    </div>
+  </div>
+</header>
 
 <!-- QR POPOVER -->
 <div id="qr-popover">
@@ -1289,15 +1290,15 @@
     <p class="hero-desc">
       Instantly display videos, presentations, PDFs, and infographics from any public Google Drive folder — inline, downloadable, and mobile-ready.
     </p>
-<div class="hero-guide">
-       <h4>⚡ Quick Start</h4>
-       <ol>
-         <li>The portal automatically loads content from your Google Drive folder</li>
-         <li>Browse videos, presentations, PDFs, and images in the sections below</li>
-         <li>Click on media items to view them in fullscreen or download</li>
-         <li>Use the QR code in the header to access this portal on mobile devices</li>
-       </ol>
-     </div>
+    <div class="hero-guide">
+      <h4>⚡ Quick Start</h4>
+      <ol>
+        <li>Click <strong>⚙ Setup</strong> in the header to configure your API key</li>
+        <li>Paste your Google Drive folder URL or ID in the box above</li>
+        <li>Click <strong>Load ▶</strong> — content appears instantly</li>
+        <li>Download any file with the <strong>⬇ Export</strong> button</li>
+      </ol>
+    </div>
 
     <a class="hero-qr-badge" href="https://soil-media-portal.vercel.app/" target="_blank" rel="noopener" title="Scan QR or click to open portal">
       <img src="qr-code.jpg" alt="QR Code">
@@ -1514,7 +1515,46 @@
 </div>
 
 <!-- ── SETUP GUIDE MODAL ─────────────────────────────── -->
+<div id="guide-modal">
+  <div class="guide-box">
+    <h3>⚙️ Setup Guide</h3>
 
+    <label class="field-label">Google Drive API Key</label>
+    <div class="api-key-wrap">
+      <input type="password" class="api-key-input" id="api-key-input" placeholder="AIza…your key here…">
+    </div>
+
+    <p style="font-size:12px;color:#888;margin-top:6px;">
+      Key is stored only in your browser's local storage — never sent anywhere except Google APIs.
+    </p>
+
+    <div style="margin-top:24px;">
+      <div class="guide-step">
+        <div class="step-num">1</div>
+        <p>Go to <a href="https://console.cloud.google.com/" target="_blank" style="color:var(--leaf)">Google Cloud Console</a> → Create a project → Enable <strong>Google Drive API</strong>.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">2</div>
+        <p>Go to <strong>APIs & Services → Credentials → Create Credentials → API Key</strong>. Copy the key and paste it above.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">3</div>
+        <p>Restrict the key: under <strong>API restrictions</strong> → select <strong>Google Drive API</strong>. Under <strong>Application restrictions</strong> → select <em>HTTP referrers</em> and add your site URL.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">4</div>
+        <p>Open your Google Drive folder → click <strong>Share</strong> → change access to <strong>"Anyone with the link"</strong>. The folder ID is the part of the URL after <code>/folders/</code>.</p>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">5</div>
+        <p>Paste the folder ID or full URL into the header bar and click <strong>Load ▶</strong>.</p>
+      </div>
+    </div>
+
+    <button class="btn-load" id="btn-save-key">💾 Save Key &amp; Close</button>
+    <button onclick="closeGuide()" style="display:block;width:100%;margin-top:10px;padding:10px;background:none;border:1.5px solid var(--sand);border-radius:8px;cursor:pointer;font-size:14px;color:var(--text-soft);">Cancel</button>
+  </div>
+</div>
 
 <!-- ── TOAST ─────────────────────────────────────────── -->
 <div id="toast"></div>
@@ -1534,17 +1574,21 @@
 
 const FOLDER_INPUT   = document.getElementById('folder-id-input');
 const BTN_LOAD       = document.getElementById('btn-load-folder');
+const BTN_SETUP      = document.getElementById('btn-setup');
 const STATUS_BAR     = document.getElementById('status-bar');
 const STATUS_TEXT    = document.getElementById('status-text');
 const HERO           = document.getElementById('hero');
 const GUIDE_MODAL    = document.getElementById('guide-modal');
+const API_KEY_INPUT  = document.getElementById('api-key-input');
+const BTN_SAVE_KEY   = document.getElementById('btn-save-key');
 const LIGHTBOX       = document.getElementById('lightbox');
 const LIGHTBOX_IMG   = document.getElementById('lightbox-img');
 const LIGHTBOX_CLOSE = document.getElementById('lightbox-close');
 const TOAST          = document.getElementById('toast');
 
 /* ── State ── */
-let apiKey = 'AIzaSyB0NoQQzJekuFfqQUAzkwJzg5hwQfZ5tAE';
+let apiKey = localStorage.getItem('gd_api_key') || '';
+if (apiKey) API_KEY_INPUT.value = apiKey;
 
 /* ── Helpers ── */
 function extractFolderId(input) {
@@ -1572,7 +1616,8 @@ function setCount(id, n) {
   document.getElementById('count-' + id).textContent = n + (n === 1 ? ' item' : ' items');
 }
 
-// Setup functions removed - portal is now static with pre-configured API key
+function openGuide()  { GUIDE_MODAL.classList.add('open'); }
+function closeGuide() { GUIDE_MODAL.classList.remove('open'); }
 
 /* ── Setup Modal ── */
 BTN_SETUP.addEventListener('click', openGuide);
@@ -1619,24 +1664,28 @@ function classify(mimeType) {
 
 /* ── Drive API fetch (paginates up to 1000 files) ── */
 async function fetchDriveFiles(folderId) {
-   let files = [], pageToken = null;
-   const fields = 'nextPageToken,files(id,name,mimeType,thumbnailLink,webViewLink)';
-   const base = `https://www.googleapis.com/drive/v3/files`;
-   do {
-     let url = `${base}?q=${encodeURIComponent(`'${folderId}' in parents and trashed=false`)}&fields=${encodeURIComponent(fields)}&pageSize=100&key=${apiKey}`;
-     if (pageToken) url += `&pageToken=${pageToken}`;
-     showStatus(`Fetching files… (${files.length} loaded)`);
-     const res = await fetch(url);
-     if (!res.ok) {
-       const err = await res.json().catch(() => ({}));
-       throw new Error(err?.error?.message || `Drive API error ${res.status}`);
-     }
-     const data = await res.json();
-     files = files.concat(data.files || []);
-     pageToken = data.nextPageToken || null;
-   } while (pageToken);
-   return files;
- }
+  if (!apiKey) {
+    openGuide();
+    throw new Error('API key not set. Please configure it via Setup ⚙.');
+  }
+  let files = [], pageToken = null;
+  const fields = 'nextPageToken,files(id,name,mimeType,thumbnailLink,webViewLink)';
+  const base = `https://www.googleapis.com/drive/v3/files`;
+  do {
+    let url = `${base}?q=${encodeURIComponent(`'${folderId}' in parents and trashed=false`)}&fields=${encodeURIComponent(fields)}&pageSize=100&key=${apiKey}`;
+    if (pageToken) url += `&pageToken=${pageToken}`;
+    showStatus(`Fetching files… (${files.length} loaded)`);
+    const res = await fetch(url);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Drive API error ${res.status}`);
+    }
+    const data = await res.json();
+    files = files.concat(data.files || []);
+    pageToken = data.nextPageToken || null;
+  } while (pageToken);
+  return files;
+}
 
 /* ── Embed URL builders ── */
 function videoEmbedUrl(fileId) {
