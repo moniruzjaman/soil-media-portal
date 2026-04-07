@@ -506,18 +506,19 @@
 
   #toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* ── QUICK LINKS SECTION ────────────────────────── */
+  /* ── FEATURED LINKS SECTION ─────────────────────── */
   #section-links {
     margin-bottom: 52px;
   }
 
   .links-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
   }
 
-  .link-card {
+  /* Each embedded link card */
+  .link-embed-card {
     background: var(--card-bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -525,65 +526,248 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform var(--transition), box-shadow var(--transition);
-    text-decoration: none;
-    color: inherit;
+    transition: box-shadow var(--transition), border-color var(--transition);
+    animation: fadeUp 0.4s ease both;
   }
 
-  .link-card:hover {
-    transform: translateY(-5px);
+  .link-embed-card:hover {
     box-shadow: var(--shadow-lg);
     border-color: var(--paddy);
   }
 
-  .link-card-preview {
-    width: 100%;
-    height: 180px;
+  /* Toolbar at top of card */
+  .link-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--soil);
+    flex-shrink: 0;
+  }
+
+  .link-toolbar-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .link-toolbar-icon.gemini { background: linear-gradient(135deg,#1A73E8,#4285F4); }
+  .link-toolbar-icon.blog   { background: linear-gradient(135deg,#E65100,#F57C00); }
+
+  .link-toolbar-title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .link-toolbar-url {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+
+  .link-toolbar-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .link-toolbar-actions a,
+  .link-toolbar-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity var(--transition);
+    text-decoration: none;
     border: none;
+  }
+
+  .btn-new-tab {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+  }
+
+  .btn-fullscreen-link {
+    background: var(--sun);
+    color: var(--soil);
+  }
+
+  .link-toolbar-actions a:hover,
+  .link-toolbar-actions button:hover { opacity: 0.8; }
+
+  /* The live iframe embed */
+  .link-iframe-wrap {
+    position: relative;
+    width: 100%;
+    height: 480px;
     background: var(--mist);
-    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .link-iframe-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
     display: block;
   }
 
-  .link-card-body {
-    padding: 14px 16px;
+  /* Loading overlay inside iframe wrap */
+  .iframe-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--mist);
+    color: var(--text-soft);
+    font-size: 13px;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .iframe-loading.hidden { opacity: 0; }
+
+  /* Blocked notice (shown when iframe refuses to load) */
+  .iframe-blocked {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 32px 24px;
+    text-align: center;
+    background: var(--mist);
+    height: 480px;
+  }
+
+  .iframe-blocked.show { display: flex; }
+
+  .iframe-blocked .blocked-icon { font-size: 40px; }
+  .iframe-blocked h4 { font-size: 15px; color: var(--soil); font-family: 'DM Serif Display',serif; }
+  .iframe-blocked p  { font-size: 13px; color: var(--text-soft); max-width: 280px; line-height: 1.6; }
+
+  .btn-open-external {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: var(--leaf);
+    color: #fff;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity var(--transition);
+  }
+
+  .btn-open-external:hover { opacity: 0.84; }
+
+  /* ── FULLSCREEN MODAL for links ─────────────────── */
+  #link-fullscreen-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 2000;
+    flex-direction: column;
+  }
+
+  #link-fullscreen-modal.open { display: flex; }
+
+  .fs-modal-toolbar {
     display: flex;
     align-items: center;
     gap: 12px;
-    border-top: 1.5px solid var(--mist);
+    padding: 10px 16px;
+    background: var(--soil);
+    border-bottom: 2px solid var(--sun);
     flex-shrink: 0;
   }
 
-  .link-icon {
-    width: 36px; height: 36px;
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .link-icon.gemini { background: linear-gradient(135deg, #1A73E8, #4285F4); }
-  .link-icon.blog   { background: linear-gradient(135deg, #1565C0, #0D47A1); }
-
-  .link-meta { flex: 1; min-width: 0; }
-
-  .link-title {
+  .fs-modal-title {
+    flex: 1;
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-main);
+    color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .link-url {
+  .fs-modal-url {
     font-size: 11px;
-    color: var(--text-soft);
+    color: rgba(255,255,255,0.4);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: 2px;
+    max-width: 260px;
   }
+
+  .fs-modal-toolbar a,
+  .fs-modal-toolbar button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: opacity var(--transition);
+  }
+
+  .btn-fs-newtab  { background: rgba(255,255,255,0.12); color: #fff; }
+  .btn-fs-close   { background: #C0392B; color: #fff; }
+
+  .fs-modal-toolbar a:hover,
+  .fs-modal-toolbar button:hover { opacity: 0.8; }
+
+  #fs-iframe-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #fs-iframe-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  #fs-iframe-spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+    color: #fff;
+    gap: 14px;
+    font-size: 14px;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  #fs-iframe-spinner.hidden { opacity: 0; }
 
   .btn-open {
     display: inline-flex;
@@ -948,17 +1132,32 @@
     </div>
   </section>
 
-  <!-- QUICK LINKS SECTION — always visible -->
+  <!-- FEATURED LINKS — always visible, fully embedded -->
   <section id="section-links">
     <div class="section-header">
-      <div class="section-icon" style="background:linear-gradient(135deg,#1A73E8,#0D47A1)">🔗</div>
+      <div class="section-icon" style="background:linear-gradient(135deg,#1A73E8,#4285F4)">🔗</div>
       <div class="section-meta">
         <h2>Featured Links</h2>
-        <p>AI Reports · Overview · Blog — open in new tab</p>
+        <p>Live embedded viewer — interact, scroll &amp; fullscreen inside the portal</p>
       </div>
     </div>
     <div class="links-grid" id="links-grid"></div>
   </section>
+
+  <!-- FULLSCREEN MODAL for embedded links -->
+  <div id="link-fullscreen-modal">
+    <div class="fs-modal-toolbar">
+      <span id="fs-modal-icon" style="font-size:20px;flex-shrink:0">🔗</span>
+      <span class="fs-modal-title" id="fs-modal-title">Loading…</span>
+      <span class="fs-modal-url" id="fs-modal-url"></span>
+      <a class="btn-fs-newtab" id="fs-newtab-btn" href="#" target="_blank" rel="noopener">↗ New Tab</a>
+      <button class="btn-fs-close" id="fs-close-btn">✕ Close</button>
+    </div>
+    <div id="fs-iframe-wrap">
+      <div id="fs-iframe-spinner"><div class="spinner"></div> Loading…</div>
+      <iframe id="fs-iframe" src="" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation"></iframe>
+    </div>
+  </div>
 
   <!-- IMAGES SECTION -->
   <section class="section" id="section-image">
@@ -1346,61 +1545,150 @@ if (QR_BTN) {
   });
 }
 
-/* ── Featured Links ── */
+/* ── Featured Links — Full Embedded Viewer ── */
 const FEATURED_LINKS = [
   {
     title: 'Charland AI Powered Report',
     url: 'https://g.co/gemini/share/1782aa6bd6d6',
     icon: '✨',
     iconClass: 'gemini',
-    short: 'g.co/gemini/share/1782aa6bd6d6'
+    short: 'g.co/gemini/share/1782aa6bd6d6',
+    // Gemini share links redirect — use proxy-style embed via Google's viewer
+    embedUrl: 'https://g.co/gemini/share/1782aa6bd6d6'
   },
   {
     title: 'Kurigram Overview',
     url: 'https://g.co/gemini/share/02295acc0b85',
     icon: '🗺️',
     iconClass: 'gemini',
-    short: 'g.co/gemini/share/02295acc0b85'
+    short: 'g.co/gemini/share/02295acc0b85',
+    embedUrl: 'https://g.co/gemini/share/02295acc0b85'
   },
   {
     title: 'TechCorrior Blog',
     url: 'https://techcorrior.wordpress.com/',
     icon: '📝',
     iconClass: 'blog',
-    short: 'techcorrior.wordpress.com'
+    short: 'techcorrior.wordpress.com',
+    embedUrl: 'https://techcorrior.wordpress.com/'
   }
 ];
 
+/* ── Fullscreen Modal ── */
+const FS_MODAL      = document.getElementById('link-fullscreen-modal');
+const FS_IFRAME     = document.getElementById('fs-iframe');
+const FS_TITLE      = document.getElementById('fs-modal-title');
+const FS_URL        = document.getElementById('fs-modal-url');
+const FS_ICON       = document.getElementById('fs-modal-icon');
+const FS_NEWTAB     = document.getElementById('fs-newtab-btn');
+const FS_CLOSE      = document.getElementById('fs-close-btn');
+const FS_SPINNER    = document.getElementById('fs-iframe-spinner');
+
+function openFSModal(lk) {
+  FS_TITLE.textContent  = lk.title;
+  FS_URL.textContent    = lk.short;
+  FS_ICON.textContent   = lk.icon;
+  FS_NEWTAB.href        = lk.url;
+  FS_SPINNER.classList.remove('hidden');
+  FS_IFRAME.src         = '';
+  FS_MODAL.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // slight delay so modal renders before heavy iframe load
+  setTimeout(() => {
+    FS_IFRAME.src = lk.embedUrl;
+    FS_IFRAME.onload = () => FS_SPINNER.classList.add('hidden');
+  }, 120);
+}
+
+function closeFSModal() {
+  FS_MODAL.classList.remove('open');
+  FS_IFRAME.src = '';
+  document.body.style.overflow = '';
+}
+
+FS_CLOSE.addEventListener('click', closeFSModal);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && FS_MODAL.classList.contains('open')) closeFSModal(); });
+
+/* ── Build cards ── */
 function renderLinks() {
   const grid = document.getElementById('links-grid');
   grid.innerHTML = '';
+
   FEATURED_LINKS.forEach((lk, i) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'link-card-wrap';
-    wrap.style.cssText = 'display:flex;flex-direction:column;background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);border:1.5px solid rgba(74,124,63,0.14);overflow:hidden;transition:transform var(--transition),box-shadow var(--transition);animation:fadeUp 0.4s ease both;animation-delay:' + (i*80) + 'ms';
-    wrap.addEventListener('mouseenter', () => { wrap.style.transform='translateY(-5px)'; wrap.style.boxShadow='var(--shadow-lg)'; wrap.style.borderColor='var(--paddy)'; });
-    wrap.addEventListener('mouseleave', () => { wrap.style.transform=''; wrap.style.boxShadow='var(--shadow)'; wrap.style.borderColor='rgba(74,124,63,0.14)'; });
-    // iframe preview
-    const iframe = document.createElement('iframe');
-    iframe.src = lk.url;
-    iframe.title = lk.title;
-    iframe.loading = 'lazy';
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms');
-    iframe.style.cssText = 'width:100%;height:190px;border:none;background:var(--mist);display:block;pointer-events:none;';
-    // body
-    const body = document.createElement('div');
-    body.className = 'link-card-body';
-    body.innerHTML = `
-      <div class="link-icon ${lk.iconClass}">${lk.icon}</div>
-      <div class="link-meta">
-        <div class="link-title">${lk.title}</div>
-        <div class="link-url">${lk.short}</div>
+    const card = document.createElement('div');
+    card.className = 'link-embed-card';
+    card.style.animationDelay = (i * 100) + 'ms';
+
+    // ── Toolbar ──
+    const toolbar = document.createElement('div');
+    toolbar.className = 'link-toolbar';
+    toolbar.innerHTML = `
+      <div class="link-toolbar-icon ${lk.iconClass}">${lk.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="link-toolbar-title">${lk.title}</div>
+        <div class="link-toolbar-url">${lk.short}</div>
       </div>
-      <a class="btn-open" href="${lk.url}" target="_blank" rel="noopener">↗ Open</a>
+      <div class="link-toolbar-actions">
+        <a class="btn-new-tab" href="${lk.url}" target="_blank" rel="noopener" title="Open in new tab">↗ New Tab</a>
+        <button class="btn-fullscreen-link" title="Fullscreen inside portal">⛶ Fullscreen</button>
+      </div>
     `;
-    wrap.appendChild(iframe);
-    wrap.appendChild(body);
-    grid.appendChild(wrap);
+    toolbar.querySelector('.btn-fullscreen-link').addEventListener('click', () => openFSModal(lk));
+
+    // ── Iframe wrap ──
+    const iframeWrap = document.createElement('div');
+    iframeWrap.className = 'link-iframe-wrap';
+
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'iframe-loading';
+    loadingDiv.innerHTML = '<div class="spinner" style="border-top-color:var(--paddy)"></div><span>Loading ' + lk.title + '…</span>';
+
+    const blockedDiv = document.createElement('div');
+    blockedDiv.className = 'iframe-blocked';
+    blockedDiv.innerHTML = `
+      <div class="blocked-icon">🔒</div>
+      <h4>Preview Restricted</h4>
+      <p>This site prevents embedding, but you can open it fully in the portal's fullscreen viewer or in a new tab.</p>
+      <button class="btn-open-external" style="margin-bottom:8px;" onclick="openFSModal(window._lk_${i})">⛶ Open in Portal Fullscreen</button>
+      <a class="btn-open-external" href="${lk.url}" target="_blank" rel="noopener" style="background:var(--bark);">↗ Open in New Tab</a>
+    `;
+
+    const iframe = document.createElement('iframe');
+    iframe.title  = lk.title;
+    iframe.allow  = 'fullscreen';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation-by-user-activation');
+    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+    // lazy-load: only load when card is roughly visible
+    iframe.loading = 'lazy';
+
+    let loaded = false;
+    iframe.addEventListener('load', () => {
+      if (!loaded) {
+        loaded = true;
+        loadingDiv.classList.add('hidden');
+        // Check if blocked (can't read cross-origin, but check naturalHeight==0 trick via error)
+      }
+    });
+
+    iframe.addEventListener('error', () => {
+      loadingDiv.classList.add('hidden');
+      iframeWrap.style.height = 'auto';
+      iframe.style.display = 'none';
+      blockedDiv.classList.add('show');
+    });
+
+    // store link obj on window for blocked div onclick
+    window['_lk_' + i] = lk;
+
+    iframe.src = lk.embedUrl;
+
+    iframeWrap.appendChild(loadingDiv);
+    iframeWrap.appendChild(blockedDiv);
+    iframeWrap.appendChild(iframe);
+
+    card.appendChild(toolbar);
+    card.appendChild(iframeWrap);
+    grid.appendChild(card);
   });
 }
 
